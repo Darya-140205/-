@@ -1,0 +1,38 @@
+Обычно поля классов задают приватными для того, чтобы пользователи не могли напрямую к ним обращаться. Это делается, например, для фильтрации ввода из консоли,
+ведь поля не могут, как правило, иметь произвольные значения. Поэтому для доступа к полям класса существуют сеттеры и геттеры. Первые принимают на вход прарметры для последующей инициализации ими
+полей класса. Вторые обычно не принимают ничего, а возвращают значение полей класса. Вот простейший пример:
+
+class С1{
+
+    public:
+    
+    void set_name(std::string str){
+        name=str;
+    }
+      
+    void set_surname(std::string str){
+        surname=str;
+    }
+
+    std::string get_name(){
+        return name;
+    }
+    std::string get_surname(){
+        return name;
+    }
+
+    private:
+    std::string name;
+    std::string surname;
+
+};
+
+int main(){
+   С1 c1;
+   c1.set_name("Tom");
+   c1.set_surname("White");
+   std::string name=c1.get_name();
+   std::string surname=c1.get_surname();
+
+}
+
