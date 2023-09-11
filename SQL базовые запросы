@@ -1,0 +1,59 @@
+Создадим таблицу people с полями name(chatacter varying), surname(chatacter varying), age(integer).  
+
+Create table people(
+    name character varying,
+	surname character varying,
+	age integer
+);
+
+вставка строк в таблицу:
+INSERT INTO public.people(
+	name, surname, age)
+	VALUES ('Максим', 'Трофимов', 19);
+INSERT INTO public.people(
+	name, surname, age)
+	VALUES ('Денис', 'Белов', 17);
+INSERT INTO public.people(
+	name, surname, age)
+	VALUES ('Евгений', 'Сахаров', 21);
+INSERT INTO public.people(
+	name, surname, age)
+	VALUES ('Роман', 'Косицын', 25);
+INSERT INTO public.people(
+	name, surname, age)
+	VALUES ('Мирон', 'Берг', 22);
+INSERT INTO public.people(
+	name, surname, age)
+	VALUES ('Сергей', 'Фёдоров', 23);	
+
+вставка записи только с одим полем name:
+INSERT INTO public.people (name) VALUES('Пётр');
+
+вывод полей соответствующих условию: age>20 
+select * from people
+where age>20;
+
+вывод полей соответствующих условию: age>20 и age<23 
+select *from people where age between 20 and 23 
+
+сортировка по полю age по возрастанию:
+select *from people order by age  
+
+сортировка по полю age по убыванию:
+select *from people order by age  desc
+
+вывод полей соответствующих условию: age=20 или age=23 
+select *from people where age in(20,23) 
+
+create table results(
+	mathematics integer,
+	physics integer,
+	Russian_language integer REFERENCES people (name)
+)
+
+удаление полей с нужными параметрами:
+	DELETE FROM public.people
+WHERE name='Максим';
+
+удаление таблицы:
+DROP table people;
