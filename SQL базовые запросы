@@ -66,11 +66,30 @@ results.physics,results.russian_language
 from people join results 
 on results.surname=people.surname
 
+выводит записи, которые есть в таблице result и присоединяет к ним соответствующи поля из таблицы people:
+select people.name,people.surname,people.age,results.mathematics,
+results.physics,results.russian_language
+from people right join results 
+on results.surname=people.surname
+
+выводит записи, которые есть в таблице people и присоединяет к ним соответствующие поля из таблицы results:
+select people.name,people.surname,people.age,results.mathematics,
+results.physics,results.russian_language
+from people left join results 
+on results.surname=people.surname
+
 переименование таблиц для удобства написания запросов:
 select p.name ,p.surname peopl,p.age ,r.mathematics ,
 r.physics ,r.russian_language 
 from people p join results r
 on r.surname=p.surname
+
+вывод объединённых таблиц,где выполняется условие mathematics>280
+select p.name,p.surname,p.age,r.mathematics,
+r.physics,r.russian_language
+from people p join results r
+on r.surname=p.surname
+where r.mathematics>280
 
 удаление полей с нужными параметрами:
 	DELETE FROM public.people
