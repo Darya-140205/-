@@ -9,32 +9,32 @@ Create table people(
 вставка строк в таблицу:
 INSERT INTO public.people(
 	name, surname, age)
-	VALUES ('Максим', 'Трофимов', 19);
+	VALUES ('Максим', 'Трофимов', 18);
 INSERT INTO public.people(
 	name, surname, age)
 	VALUES ('Денис', 'Белов', 17);
 INSERT INTO public.people(
 	name, surname, age)
-	VALUES ('Евгений', 'Сахаров', 21);
+	VALUES ('Евгений', 'Сахаров', 16);
 INSERT INTO public.people(
 	name, surname, age)
-	VALUES ('Роман', 'Косицын', 25);
+	VALUES ('Роман', 'Косицын', 17);
 INSERT INTO public.people(
 	name, surname, age)
-	VALUES ('Мирон', 'Берг', 22);
+	VALUES ('Мирон', 'Берг', 18);
 INSERT INTO public.people(
 	name, surname, age)
-	VALUES ('Сергей', 'Фёдоров', 23);	
+	VALUES ('Сергей', 'Фёдоров', 16);	
 
 вставка записи только с одим полем name:
 INSERT INTO public.people (name) VALUES('Пётр');
 
-вывод полей соответствующих условию: age>20 
+вывод полей соответствующих условию: age>16 
 select * from people
-where age>20;
+where age>16;
 
-вывод полей соответствующих условию: age>20 и age<23 
-select *from people where age between 20 and 23 
+вывод полей соответствующих условию: age>16 и age<18 
+select *from people where age between 16 and 18 
 
 сортировка по полю age по возрастанию:
 select *from people order by age  
@@ -42,8 +42,8 @@ select *from people order by age
 сортировка по полю age по убыванию:
 select *from people order by age  desc
 
-вывод полей соответствующих условию: age=20 или age=23 
-select *from people where age in(20,23) 
+вывод полей соответствующих условию: age=16 или age=17 
+select *from people where age in(16,17) 
 
 create table results(
 	mathematics integer,
