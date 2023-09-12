@@ -58,8 +58,19 @@ INSERT INTO results(
 	       ('Сахаров', 291,295,293),
            ('Косицын', 268,275,293),
 	       ('Берг', 278,283,291),
-           ('Фёдоров', 283,279,291);	
+           ('Фёдоров', 283,279,291);
 
+объединение таблиц:
+select people.name,people.surname,people.age,results.mathematics,
+results.physics,results.russian_language
+from people join results 
+on results.surname=people.surname
+
+переименование таблиц для удобства написания запросов:
+select p.name ,p.surname peopl,p.age ,r.mathematics ,
+r.physics ,r.russian_language 
+from people p join results r
+on r.surname=p.surname
 
 удаление полей с нужными параметрами:
 	DELETE FROM public.people
