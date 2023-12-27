@@ -3,7 +3,7 @@
 Рассмотрим следующий пример: 
 
 
-skillbox-3
+
 
 class Dog{
     std::string breed
