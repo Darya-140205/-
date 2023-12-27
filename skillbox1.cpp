@@ -5,7 +5,7 @@ int main() {
 	setlocale(LC_ALL,"en_US.UTF-8");
 	setlocale(LC_ALL,"Russian");
 		setlocale(LC_ALL," ");
-	int y;
+	
 	int lap=4;	
 	int engine=254;
 	int wheels=93;
