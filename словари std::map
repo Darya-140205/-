@@ -1,0 +1,203 @@
+задача 1: Напишите программу «Телефонный справочник».
+
+На вход программе поступают запросы трёх типов:
+
+69-70-30 Ivanov — добавить телефон и фамилию абонента в справочник
+
+69-70-30 — узнать фамилию абонента по номеру телефона
+
+Ivanov — узнать телефон абонента по фамилии 
+
+
+#include <iostream>
+#include <string>
+# include <vector>
+# include <map>
+int main()   {
+
+    std::string query="Semenov", telephon="", surmame="";
+    std::multimap <std::string, std::string> oMap, oMap1;
+    std::vector <std::string> vec_surnames;
+    int space=0;
+    int reques_number;
+    
+    oMap.insert(std::make_pair("45-13-16","Petrov"));
+    oMap.insert(std::make_pair("66-17-17","Tormanov"));
+    oMap.insert(std::make_pair("21-94-23","Ivanov"));
+    oMap.insert(std::make_pair("34-92-24","Semenov"));
+    oMap.insert(std::make_pair("76-18-25","Orlov"));
+    oMap.insert(std::make_pair("34-54-76","Smirnov"));
+    oMap.insert(std::make_pair("95-56-84","Nicolayev"));
+    oMap.insert(std::make_pair("76-82-76","Smirnov"));
+    oMap.insert(std::make_pair("63-92-24","Semenov"));
+    
+    for (std::multimap <std::string, std::string> :: iterator it= oMap.begin() ;  it!=oMap.end();++it ) {
+        oMap1.insert(std::make_pair(it->second,it->first));
+    } 
+        
+    
+    std::cout<<"enter a query\n";
+    std::getline(std::cin,query);
+    
+    
+    for (int i=0; i<query.length();++i){
+        if (query[i]==' '){
+            ++space;
+        }
+    }
+    
+    if (space==1) {
+        reques_number=1; }
+    else {
+        if( query[0]>='0' & query[0]<='9') {
+            reques_number=2;
+        } else {
+            reques_number=3;
+        }
+    }
+    
+    bool number_end=false;
+    int i=0;
+    if (reques_number==1) {
+        while (i<query.length()) {
+            
+            if (query[i]!=' ' & !number_end) {
+                telephon+=query[i];
+                ++i;
+            } else {
+                ++i;
+                surmame+=query[i];
+                number_end=true;
+            }     
+        }    
+    }
+    
+    
+    if (reques_number==1) {
+        oMap.insert(std::make_pair(telephon,surmame));
+        oMap1.insert(std::make_pair(surmame,telephon));
+    } else if (reques_number==2) {
+    /*по номеру узнаём имя один вариант*/
+        std::cout<<"the person with the phone number "<<query <<" is "<<oMap.find(query)->second;
+    
+    } else {
+    
+        for (std::map <std::string , std::string > :: iterator it =oMap1.find(query) ;it!=oMap1.end() ;++it) {
+            if (it->first==query) {
+                vec_surnames.push_back(it->second);
+            } else break;
+    
+        }   
+        std::cout<<"number/numbers of a person named "<<query<<":\n";
+        for (int i=0; i< vec_surnames.size();++i){
+            std::cout<<vec_surnames[i]<<"\n";
+        } 
+    }
+        
+}
+
+
+
+
+
+задача 2:
+Напишите программу «Регистратура».
+На вход программе приходят строки с фамилиями или строка Next.
+Пришедшие люди становятся в очередь, а по запросу Next необходимо
+вызвать в регистратуру человека с фамилией, идущей первой в 
+лексикографическом порядке (по алфавиту), и вывести его фамилию 
+на экран. Фамилии пациентов могут повторяться.
+
+#include <iostream>
+#include <string>
+# include <map>
+
+int main () {
+	
+   
+    std::map <std::string ,int> oMap;
+    oMap["Petrov"]=0;
+    oMap["Tormanov"]=1;
+    oMap["Ivanov"]=2;
+    oMap["Semenov"]=3;
+    oMap["Orlov"]=4;
+    oMap["Golubev"]=5;
+    oMap["Chernov"]=6;
+    oMap["Krasnov"]=7;
+    oMap["Nicolayev"]=8;
+    oMap["Sazanov"]=9;
+
+    std::string input_str;
+    
+
+    while (!oMap.empty()) {
+        std::cout<<"Input string:\n";
+        std::cin>>input_str;
+        if (input_str=="Next"){
+            std::cout<<"called to the register: "<<oMap.begin()->first<<std::endl;
+            oMap.erase(oMap.begin());
+        } else {
+            std::pair < std::string, int> oPair(input_str, oMap.size());
+            oMap.insert(oPair); 
+        }
+    }
+    
+    std::cout<<"the queue is over";
+    
+}
+
+
+
+задача 3:
+Напишите функцию, которая принимает две строки и возвращает true, 
+если первая строка является анаграммой второй (то есть можно
+получить первую строку из второй путём перестановки букв местами),
+и false иначе. Для достижения хорошей асимптотики решения
+рекомендуется использовать std::map.
+
+#include <iostream>
+#include <string>
+# include <map>
+
+int main() {
+    
+    bool answer=true;
+    std::string str1,str2;
+	std::cout<<"Input string number 1 \n";
+    std::cin>>str1;
+    std::cout<<"Input string number 1 \n";
+    std::cin>>str2;
+
+    std::map <char, int> oMap;
+    std::map <char, int> oMap1;
+    
+    for (int i=0; i<str1.length();++i){
+        oMap[str1[i]]=1;
+    }
+    
+    for (int i=0; i<str2.length();++i){
+        oMap1[str2[i]]=1;
+    }
+    
+    if (oMap1.size()!=oMap.size()) {
+        answer=false;
+    }
+
+
+    while (!oMap.empty()){
+        if  ( oMap1.begin()->first!=oMap.begin()->first )  {
+            answer=false;
+            break;
+        }
+        oMap1.erase(oMap1.begin());
+        oMap.erase(oMap.begin());
+    }
+
+    
+    
+    if (answer){
+        std::cout<<"the first line is an anagram of the second";
+    } else {
+        std::cout<<"the first line is not an anagram of the second";
+    }
+}
