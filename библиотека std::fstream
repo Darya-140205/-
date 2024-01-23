@@ -1,0 +1,720 @@
+задание 1: найти в тексте введённое пользователем слово и посчитать их количество 
+#include <iostream>
+# include <vector>
+# include <fstream>
+
+int main()   {
+		
+std::ifstream word_search;
+word_search.open("C:\\develop\\test\\words.txt");
+std::string word_choice, word;
+std::vector <std::string> buffer;
+
+std::cout<<"Input word: ";
+std::cin>>word_choice;
+
+int i=0;
+while (!word_search.eof()) {
+word_search>>word;
+buffer.push_back(word);
+++i;	
+}
+
+
+
+задание 2 : вывести содержимое файла в консоль
+#include <iostream>
+# include <cmath>
+#include <string>
+# include <fstream>
+
+int main()   {
+	
+	std::ifstream buffer;
+	std::string path="C:\\develop\\test\\words.txt";
+	buffer.open(path);
+	std::string	str;
+    
+	getline(buffer, str,'\n');
+	std::cout<<str<<"\n";
+	while (!buffer.eof()) {
+	getline(buffer, str,'\n');
+	std::cout<<str<<"\n";
+	}
+	
+}
+
+
+задание 3: Реализуйте программу чтения информации из ведомости по учёту выплат. Сама ведомость представляет собой следующую таблицу: 
+
+имя и фамилия человека; 
+количество денег, которые были выплачены лицу; 
+дата выплаты в формате ДД.ММ.ГГГГ.
+На основе данных из ведомости следует подсчитать общее количество выплаченных средств и определить человека с максимальной суммой выплат.
+
+Пример данных ведомости
+
+Tom Hanks 35500 10.11.2020
+
+Rebecca Williams 85000 1.1.2021
+
+Sally Field 15600 15.8.2021
+
+Michael Humphreys 29400 23.5.2020
+
+Harold Herthum 74300 9.6.2019
+
+George Kelly 45000 12.3.2018
+
+Bob Penny 12500 13.5.2020
+
+John Randall 23400 2.10.2020
+
+Sam Anderson 6500 15.7.2020
+
+Margo Moorer 12350 24.2.2019
+
+
+
+#include <iostream>
+#include <string>
+# include <cassert>
+# include <vector>
+# include <fstream>
+using namespace std;
+int main()   {
+
+    std::ifstream data;
+	std::string path="C:\\develop\\test\\words.txt";
+	data.open(path);
+	std::vector <std::string> buffer, name, surname, sum, date;
+    std::string word;
+    int space=0;
+    
+    while (!data.eof()) {
+        data>> word;
+        buffer.push_back( word);
+    }
+    
+    int j;
+    for (j=0; j <buffer.size()-1 ;j+=4){
+	    name.push_back(buffer[j]);
+        surname.push_back(buffer[j+1]);
+	    sum.push_back(buffer[j+2]);
+        date.push_back(buffer[j+3]); 
+    }
+
+    int total_amount=0;
+    int max=0;
+    int ind_max;
+    for (j=0; j< sum.size() ; ++j) {
+	    if (std::stod( sum[j] )>max){
+            max=std::stod( sum[j] );
+            ind_max=j;
+        } 
+        total_amount+=std::stod( sum[j] );
+    }
+  
+    std::cout<<"total amount= "<<total_amount<<"\n"<<"recipient of the largest amount: "<<name[ind_max]<<" "<<surname[ind_max];
+  
+}
+
+
+
+задание 4 : Реализуйте простую версию интеллектуальной игры «Что? Где? Когда?». 
+
+Как происходит игра
+В начале каждого хода игроки вращают волчок, то есть выбирают сектор на столе, который сейчас играет. 
+Всего таких секторов 13. Сектор выбирается так: с клавиатуры вводится офсет (смещение) относительно текущего 
+сектора на барабане. Исходя из этого офсета вычисляется новый активный сектор, который и будет играть в этом ходе.
+Если выпавший сектор уже играл, выбирает следующий неигравший за ним. В начале всей игры стрелка установлена на первом секторе.
+Как только играет какой-то из секторов, с него берётся письмо с вопросом — то есть считывается из файла данного
+сектора. Вопрос показывается на экране.
+После того как вопрос показан, от игрока ожидается ответ на него. Игрок вводит этот ответ с помощью стандартного ввода. 
+То, что он ввёл, сравнивается с ответом, который хранится во втором файле, ассоциированном с активным сектором.
+Данный файл должен содержать лишь одно слово-ответ.
+Если ответ знатока-игрока был правильным, ему начисляется один балл. Если неверен, то балл уходит телезрителям.
+Игра продолжается до тех пор, пока или игрок, или зрители не наберут шесть баллов. После этого называется победитель и программа заканчивает работу.
+
+#include <iostream>
+# include <vector>
+# include <fstream>
+
+int main()   {
+
+    std::ifstream buffer_answer, buffer_questions;
+    int offset, selected_section, player_points=0, spectator_points=0;
+    std::vector<int> section;
+    section.push_back(0);
+
+    std::string answer= "C:\\develop\\test\\answer.txt";
+    std::string questions= "C:\\develop\\test\\questions.txt";
+    std::string str_answer, str_questions, player_response; 
+
+    while (section.size()<13){
+	
+        buffer_answer.open(answer);
+        buffer_questions.open(questions);
+        bool repeat=false;
+	    std::cout<<"Enter the offset corresponding to the selected section number : ";
+	    std::cin>>offset;
+	
+	    selected_section=section[section.size()-1]+offset;
+	
+       	for (int i=0; i<section[section.size()-1] ;++i) {	
+		    if (section[i]==selected_section) {
+			    repeat=true ;
+		    }   
+		}
+	
+	    while ( selected_section>13  |  repeat ) {
+		
+		    repeat=false;
+		
+		    if ( selected_section>13 ) {
+		        selected_section-=13;
+			}  else {
+			    ++selected_section;	
+			}
+						
+		
+       	    for (int i=0; i<section[section.size()-1] ;++i) {	
+		        if (section[i]==selected_section) {
+			        repeat=true ; break;
+		        }    
+		    }
+  
+		
+	    }	
+		
+        section.push_back(selected_section);
+    
+	    for (int i=0; i<selected_section ;++i){
+            getline(buffer_questions, str_questions,'\n'); 
+            getline(buffer_answer, str_answer,'\n');
+	    }
+	
+
+	    std::cout<<str_questions<<"\n"<<"Enter your answer: "; 
+        std::cin>>player_response;
+     
+	
+	    if (player_response==str_answer) {
+		    ++player_points;
+		    std::cout<<"This is the correct answer!!!\n";
+	    } else {
+		    std::cout<<"This is the incorrect answer(((\n"<<"Correct answer: "<<str_answer<<"\n";
+		    ++spectator_points;
+	    }
+	
+        if (player_points>=6 ) {
+		    std::cout<<"Player won!";
+		    break;
+		}
+                    
+        if (spectator_points>=6 ) {
+	        std::cout<<"Viewers won!";
+            break;  
+	    }
+	
+        buffer_questions.close();
+        buffer_answer.close();
+    }
+   
+}
+
+
+
+задание 5 : создайте простую программу для записи в ведомость.
+
+Формат ведомости: 
+
+Сначала идёт имя и фамилия получателя денежных средств, далее — дата выдачи в формате ДД.ММ.ГГГГ
+Запись завершает сумма выплаты в рублях. 
+Данные разделяются между собой пробелами. 
+В конце каждой записи должен быть расположен перевод строки.
+При старте программы пользователь последовательно вводит данные для новой записи, которые затем записываются в файл в текстовом режиме. Программа должна добавлять новые записи в конец файла, не удаляя его текущее содержимое.
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+# include <cmath>
+#include <string>
+# include <vector>
+# include <fstream>
+
+int day_month_year_first_symbol (std::vector <char> str4){
+
+   char k0=str4[0];
+   int first_symbol_code= (int) k0;  
+   int first_symbol=  first_symbol_code-'0';
+   return first_symbol;
+}
+
+
+int day_month_year_second_symbol (std::vector <char> str4) {
+
+
+   char k1=str4[1];  
+   int second_symbol_code= (int)  k1;
+   int second_symbol= second_symbol_code-'0';
+   return second_symbol;
+}
+
+
+bool month_and_day (std::vector <char> str4,std::vector <char> str5) {
+	 
+    bool ok=true;
+    if (str4.size()!=2) {
+	ok=false;
+    }
+
+    if (ok) {
+		
+        int first_symbol_day= day_month_year_first_symbol(str5);
+	    int second_symbol_day= day_month_year_second_symbol(str5);
+
+		int first_symbol= day_month_year_first_symbol(str4);
+        int second_symbol= day_month_year_second_symbol(str4);
+        if ( first_symbol==0 & second_symbol==0 | first_symbol_day==0 & second_symbol_day==0 ){
+			ok=false;
+		} 
+		int mon=first_symbol*10+second_symbol;
+		int day_=first_symbol_day*10+second_symbol_day;
+
+		if( (first_symbol_day*10+second_symbol_day<31) && ok){
+        ok=true;
+        }
+
+        if (mon>12)  {
+            ok=false;
+        } 
+
+		if (mon % 2==1 && day_ > 30) {
+			ok=false;
+		}
+        
+		if  ((mon==2) && (day_ > 28)) {
+	        ok=false;
+        }
+
+	}
+
+	return ok;
+}
+
+bool year (std::vector <char> str4){
+	bool ok;
+
+    if (str4.size()!=4 | str4[0]=='0') {
+        ok=false;
+    }
+
+    return ok;
+
+}
+
+
+
+bool date(std::vector <char> str3) {
+
+    std::vector <char> str4, str5;
+    int count_points=0;
+    bool ok=true;
+    bool total_ok= true;
+
+    for (int i=0; i<str3.size() & total_ok ; ++i) {
+
+        if (str3[i]!='.') {
+		    str4.push_back(str3[i]);
+        }  else {
+        
+		    if (count_points==0) {
+			    str5=str4;
+		    }
+		    else if (count_points==1) {
+			    ok=month_and_day(str4,str5);
+			}
+		    else ok=year(str4); 
+		
+		    ++count_points;
+		    str4.clear();
+	    } 
+	    total_ok*= ((int)ok);
+    }
+
+	return total_ok;
+}
+
+
+
+
+bool points (std::vector <char> str3) {
+
+    int count_points=0;	
+    bool ok;
+    std::vector <char> str4;
+
+    for (int i=0; i<str3.size(); ++i) {
+
+        if (str3[i]=='.') {
+		    ++count_points;
+        }
+    }
+    if (count_points==2) ok= true;
+ 
+    return ok;
+}
+
+
+
+bool correct(std::vector <char> str3, int j ) {
+	bool correctly2=false;
+	int number_correct_element=0;
+
+	if (j==0 | j==1 ) {                                                            
+		for (int i=0; i<str3.size(); ++i) {
+			if  (str3[i]>='a' & str3[i]<='z' | str3[i]>='A' & str3[i]<='Z' ) {
+				++number_correct_element;
+			}
+		}
+		
+		if(number_correct_element==str3.size()) correctly2=true;  
+		               
+	}
+		else if ( j==2 ) { 
+
+		 for (int i=0; i<str3.size(); ++i) {
+
+           if (str3[i]>='0' & str3[i]<='9' | str3[i]=='.') {  
+            ++number_correct_element;
+            } 
+		    }
+	 	    correctly2=points(str3);
+			if (number_correct_element==str3.size() & correctly2)  {
+                correctly2=date(str3);
+		    } 
+		}
+
+
+	else if (j==3) {
+		for (int i=0; i<str3.size(); ++i) {
+			if (str3[i]>='0' & str3[i]<='9'){
+		    	++number_correct_element;
+			}
+		}
+		if(number_correct_element==str3.size() ) correctly2=true;
+		if (str3[0]=='0') correctly2=false;
+	}
+	return correctly2;
+}
+
+
+int main()   {
+	
+    std::fstream file;
+    std::string str, str2;
+    std::vector <char> str3;
+    bool correctly, total_correctly=true;
+    int  count_of_string_in_array=0, substr_number_str3=0;
+    int k=0, j=0, i=0;
+    file.open("C:\\develop\\test\\20_1.bin",  std::ios::binary | std::fstream::out | std::fstream::in);
+   
+    while ( count_of_string_in_array < 10) {
+        total_correctly=true, correctly=true;
+        std::cout<<"Enter the data:\n";
+        std::getline(std::cin, str);  
+        str2=str;
+        str2+=" ";
+        k=0;
+
+        for ( substr_number_str3=0; substr_number_str3<4 ; ++substr_number_str3) {
+
+        /* находим подстроку в строке */
+            do {
+	            str3.push_back(str2[k]);
+	            ++k;
+	        } while  (str2[k]!=' ');
+	
+	        ++k;
+	/*проверяем на корректность каждую подстроку */
+	        correctly=correct( str3, substr_number_str3);
+            str3.clear();
+
+	        if (!correctly){
+	            total_correctly=false;
+	            break;
+	        } 
+        }
+        if (total_correctly) {
+ 	        file<<str<<std::endl;
+	        ++ count_of_string_in_array;
+        } else {
+        std::cout<<"Incorrect input data. Try again!\n";
+        }
+
+    }
+
+    file.close(); 
+
+   
+}
+
+
+задание 6: Напишите программу, которая с помощью генератора случайных чисел будет создавать бинарные картины.
+Бинарные картины — разновидность цифровых растровых изображений, когда каждый пиксель может представлять только 
+один из двух цветов. На вход от пользователя принимается размер картины: высота и ширина в пикселях. 
+На выходе нужно создать файл pic.txt, содержимое которого будет наполнено случайными нулями и единицами в рамках размера картины.
+
+
+#include <iostream>
+# include <cmath>
+# include <fstream>
+# include <ctime>
+int main()   {
+	
+    std::srand(std::time(nullptr));
+    int heigth, width;
+    std::ofstream file("C:\\develop\\test\file.txt");
+
+    std::cout<<"Input heigth of picter: ";
+    std::cin>>heigth;
+	std::cout <<"Input width of picter: ";
+    std::cin>>width;
+    
+    for (int i=0; i<heigth;++i) {
+
+         for (int j=0; j<width;++j){
+           int k= std::rand() % 2;
+           file<<k;
+         }
+        file<<std::endl;
+    }
+    
+}
+
+
+задание 7 : Реализуйте простую симуляцию игры в рыбалку. Задание выполните в Google Docs.
+В исходном текстовом файле реки (river.txt) задайте список из разных видов рыб, которые можно в ней поймать. Рыбок может быть сколько угодно, а виды могут повторяться.
+Как должна работать симуляция:
+В начале программы пользователь указывает, какую именно рыбу он собирается ловить (её вид). 
+После этого из первого файла друг за другом осуществляется чтение его содержимого, вид за видом.
+Если на отдельных шагах вид совпал с указанным пользователем, в выходной файл basket.txt (корзинка) записывается этот вид.
+В конце программы показывается, сколько было поймано рыб за текущую ловлю. 
+Программу можно запускать несколько раз, при этом уже пойманные рыбы должны сохраняться в файле-корзинке.
+
+#include <iostream>
+# include <fstream>
+# include <cstdlib>
+
+
+int main()   {
+	
+std::string kind_of_fish, reader;;
+std::ifstream file_river;
+std::fstream file_basket;
+
+file_basket.open("C:\\develop\\test\\20_2.txt",std::fstream::in | std::fstream::out | std::fstream::app | std::ios::binary);
+
+if (!file_basket.eof()) std::cout<<"file is not empty\n";
+
+file_river.open("C:\\develop\\test\\river.txt");
+std::cout<<"What kind of fish do you want to catch?\n";
+std::cin>>kind_of_fish;
+
+int i=0, number_of_fish=0; 
+while (!file_river.eof())
+{
+   file_river>>reader;
+   if (reader==kind_of_fish) {
+    file_basket<<reader<<std::endl;
+    ++number_of_fish;
+   }
+}
+
+std::cout<< number_of_fish<< " fish were caught for the current fishing";
+file_basket.close();
+file_river.close();
+
+}
+
+
+задание 8: Реализуйте упрощённую симуляцию работы банкомата. 
+Учтите следующее:
+В банкомате могут храниться только бумажные купюры номиналом 100, 200, 500, 1 000, 2 000 и 5 000 рублей.
+Максимально в банкомате может храниться только 1 000 купюр. Все они записываются в отдельный файл. 
+У банкомата, как у устройства, две основных операции — снятие денег пользователем и наполнение деньгами 
+инкассаторами банка. Состояние банкомата должно храниться в отдельном бинарном файле, автономно.
+Банкомат работает следующим образом:
+При старте программа проверяет наличие файла .bin. Если он есть (данные по банкомату были сохранены), 
+данные загружаются и на экран выводится информация о текущем состоянии банкомата: сколько сейчас купюр
+каждого номинала и общая сумма. Если файла нет — банкомат «пустой».
+При вводе «+» заполняются недостающие купюры и выводится информация о текущем состоянии банкомата: 
+сколько сейчас купюр каждого номинала и общая сумма. Количество купюр рассчитывается так, чтобы банкомат
+был заполнен полностью. Все купюры при этом выбираются случайным образом.
+При вводе «−» симулируется снятие пользователем денег. Пользователь указывает сумму с точностью до 
+100 рублей. Считайте, что каждый клиент обладает неограниченным балансом в системе и теоретически 
+может снять любую сумму. Выдача происходит начиная с купюр большего номинала. Если запрошенная сумма
+не может быть снята из-за отсутствия подходящих купюр в машине, показывается сообщение, что эта операция
+невозможна. После выдачи денег на экран выдаётся информация о текущем состоянии банкомата: сколько сейчас
+купюр каждого номинала и общая сумма.
+При выходе из программы сохраняем состояние банкомата в файл. 
+Рекомендации
+Вы можете хранить массив купюр целиком, помечая отсутствующие позиции нулями.
+Выход из программы рекомендуется сделать по отдельной команде, а команды «+» и «−» получать в цикле.
+
+
+#include <iostream>
+#include <string>
+# include <vector>
+# include <fstream>
+# include <cstdlib>
+# include <ctime>
+#include <cmath>
+
+int main()   {
+
+    char choice;
+    int sum_choice, sum=0;
+    bool correctly;
+    std::fstream file;
+    file.open("C:\\develop\\test\\20_4.txt",  std::ios::out | std::ios::in);
+
+    std::cout<<"if you want to withdraw money - enter - , if you want to deposit money - enter + \n";
+    std::cin>>choice;
+
+    int k,n,result=0,count=0;
+
+    std::srand(std::time(nullptr));
+
+    for (int i = 0; i<100 ; ++i) {
+        if ( (int) std::rand() % 2 ) {
+            n =10/ ( std::rand() % 2 + 1 ); 
+            if (n==5) {
+                k=(std::rand() % 2 + 2 );   
+                result= n * pow(10,k);
+            } 
+            else {
+                k=(std::rand() % 2 + 1 );   
+                result= n * pow(10,k);
+            }
+            file<<result<<std::endl;
+        } else file<<0<<std::endl;  
+
+    } 
+
+    file.close();
+    file.open("C:\\develop\\test\\20_4.txt", std::ios::binary | std::ios::in | std::ios::out);
+
+    int j=0;
+    std::vector <int>  money;
+    int bill;
+    while(!file.eof()) {
+        file>>bill;
+        money.push_back(bill);
+        ++j;
+    }
+
+
+    if (choice=='-') {
+
+      std::cout<<"indicates the amount with an accuracy of 100 rubles:\n";
+      std::cin>>sum_choice;
+
+      while (sum<sum_choice) {
+
+        int index=std::rand()% money.size();
+
+        if (sum+money[index]>sum_choice | money[index]==0 ) continue;
+        else {
+            sum+=money[index];
+            money[index]=0;	
+        }
+        ++j;	
+      }  
+    } else {
+
+	      correctly=true;
+	      std::cout<<"enter the amount that collectors will pay with an accuracy of 100 rubles:\n";
+        std::cin>>sum_choice;
+    
+        if (sum_choice%100!=0) {
+          correctly=false;
+	      }
+
+        if (correctly) {
+    	
+        std::vector <int> ind;	
+        for (int i=0; i<money.size();++i) {
+            if (money[i]==0) {
+                ind.push_back(i);
+            }	
+        }
+    	
+    	
+        int number_of_5000, number_of_1000,number_of_500, number_of_100;
+        int sum_choice2=sum_choice;
+    
+        number_of_5000=(int)sum_choice/5000;
+        sum_choice-=(number_of_5000*5000);
+   
+        number_of_1000=  (int) sum_choice/1000;
+        sum_choice-=number_of_1000*1000;
+    
+        number_of_500= (int) sum_choice/500;
+        sum_choice-=number_of_500*500;
+    
+        number_of_100=(int) sum_choice/100;
+    
+        sum_choice=sum_choice2;
+    
+        if (ind.size()<number_of_5000+number_of_1000+number_of_500+number_of_100) {
+    	      correctly=false;
+	      }
+    
+        j=0;
+        while ( j<number_of_5000 & correctly){
+    	
+    	      int index=std::rand()%ind.size();
+    	      if (money[ind[index]]==0 ) {
+    		      money[ind[index]]=5000;
+    		      ++j;
+		       } 
+	      }
+	
+	
+	      j=0;
+        while ( j<number_of_1000 & correctly){ 
+    	
+    	      int index=std::rand()%ind.size();
+    	      if (money[ind[index]]==0 ) {
+    		        money[ind[index]]=1000;
+    		        ++j;
+		        } 
+	      }
+	
+		    j=0;
+        while ( j<number_of_500& correctly ){
+    	
+    	      int index=std::rand()%ind.size();
+    	      if (money[ind[index]]==0 ) {
+    		        money[ind[index]]=500;
+    		        ++j;
+		        } 
+	      }
+
+ }
+
+}
+    file.close(); 
+    file.open("C:\\develop\\test\\20_4.txt");
+    if (correctly) {
+        for (int i=0; i<money.size();++i) {
+            file<<money[i]<<std::endl;
+        } 
+    } else {
+        std::cout<<"Error. Try again!\n";
+    }
+    file.close(); 
+  
+}
+   
