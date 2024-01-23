@@ -1,0 +1,327 @@
+задание 1: 
+Напишите программу для учёта ведомости с помощью структур.
+Формат ведомости:
+сначала — имя и фамилия получателя денег;
+далее — дата выдачи в формате ДД.ММ.ГГГГ;
+затем — сумма выплаты в рублях.
+Данные разделяются пробелами. В конце каждой записи должен быть перевод строки. Структура данных должна 
+соответствовать этому формату.При старте программы пользователь отправляет команду: list или add.
+Команда list осуществляет чтение из файла ведомости, как и прежде, только уже в структуре данных, 
+и отображает их на экране. Команда add добавляет новую запись в конец ведомости.
+
+# include <iostream>
+# include <vector>
+# include <fstream>
+
+struct statement {
+   std::string name;	
+   std::string  surname;
+   std::string date;
+   std::string sum;
+}; 
+
+int main() {
+
+      std::fstream file;
+      std::string  choice = "list" , new_str_name="", new_str_surname="", new_str_date="", new_str_sum="";	
+      std::vector <statement>  character;
+
+      std::cout<<"enter 'list' to read from the list file or 'add' to add a new entry to the end of the list\n";
+      std::cin>>choice;
+
+      if (choice=="add"){
+
+            file.open ("C:\\develop\\test\\21_1.txt",  std::ios::out | std::ios::app | std::ios::binary) ;	
+            std::cout<<"Input string: ";
+            std::cin>>new_str_name>>new_str_surname>>new_str_date>>new_str_sum;
+            int i=0;
+            statement character1;
+            character1.name=new_str_name;
+            character1.surname= new_str_surname;
+            character1.date=new_str_date;
+            character1.sum=new_str_sum;
+            file<<std::endl<<character1.name<<" "<<character1.surname<<" "<<character1.date<<" "<<character1.sum;
+
+      } else if (choice=="list") {
+   
+            file.open ("C:\\develop\\test\\21_1.txt", std::ios::in | std::ios::binary) ;	
+            std::vector <std::string> new_str_list;
+            int j=0;
+            statement character2;
+
+            while(!file.eof()){  
+                  file>>character2.name>>character2.surname>>character2.date>>character2.sum;
+                  character.push_back(character2); 
+            }
+
+            for (int i=0; i<character.size(); ++i){
+                  std::cout<<character[i].name<<" "<<character[i].surname<<" "<<character[i].date<<" "<<character[i].sum<<"\n";
+            }
+   
+      }
+      file.close();
+}
+
+задание 2:
+Используя структуры данных, создайте подробную модель посёлка.
+
+Что известно:
+
+Посёлок состоит из участков, у каждого участка свой номер.
+На любом участке может стоять жилой дом, а также другие сооружения: 
+гараж, 
+сарай (бытовка),
+баня. 
+Дана информация о площади, которую каждое здание занимает на участке.
+В доме может быть 1–3 этажа, на этаже — 2–4 комнаты:
+спальня,
+кухня,
+ванная,
+детская,
+гостиная.
+Дана информация о количестве комнат и высоте потолка на каждом этаже.
+Дана информация о площади, которую занимает каждая комната.
+В доме и бане может быть печь с трубой.
+Для всех упомянутых сущностей нужно объявить структуры данных.
+
+Пользователь заполняет данные о посёлке: вводит общее количество участков, а потом детализирует каждый.
+Сначала указывается количество построек на участке, а затем — информация, какие это постройки, сколько этажей в доме, какие комнаты на этажах.
+После ввода данных можно рассчитать суммарный параметр, например процент земли, занимаемой постройками, от общей площади посёлка. Главное в этой задаче не операция подсчёта, а структуры данных.
+
+#include <iostream>
+# include <vector>
+
+
+/*какие комнаты на этаже */
+struct floor{
+    int amount_of_rooms=0;
+    float heigth=0;
+    bool bedroom=false;
+    float bedroom_square=0;
+    bool kitchen=false;
+    float kitchen_square=0;
+    bool bathroom=false;
+    float bathroom_square=0;
+    bool children=false;
+    float children_square=0;
+    bool living_room=false;
+    float living_room_square=0;
+};
+
+/* что может стоять на участке*/
+struct structures{
+    int number_of_structure=0;
+    bool house;
+    float house_square=0;
+    std::vector <floor> floors; 
+    bool garage;
+    float garage_square=0;
+    bool barn;
+    float barn_square=0;
+    bool bath;
+    float bath_square=0;
+};
+
+int main()   {
+
+    bool choice_bool;
+    int amount_of_plots;
+    int choice_int;
+    floor floor1, floor2;
+    std::cout<<"Input amount of plots\n";
+    std::cin>>amount_of_plots;
+    std::vector <structures>  plots ;
+    structures plot, plot2;
+
+
+    for (int i=0; i<amount_of_plots;++i)  {
+
+        plot.number_of_structure=i+1;
+        std::cout<<"Is there house in the plot number "<<i+1<<"? If yes - intut 1, if no - input 0\n";
+        std::cin>>choice_int;
+        choice_bool= (bool) choice_int;
+        plot.house=choice_bool;
+
+        if (choice_bool) {
+            std::cout<<"Input square of house\n"; 
+            std::cin>>plot.house_square;
+            std::cout<<"How many floor in the house?\n";
+            int amount_of_floor;
+            std::cin>>amount_of_floor;
+            
+            for (int i=0; i<amount_of_floor; ++i){
+
+                std::cout<<"Input ceiling height in the floor number "<<i+1<<"\n";
+                std::cin>>floor1.heigth;
+                std::cout<<"Input count of rooms in the floor number "<<i+1<<"\n";
+                std::cin>>floor1.amount_of_rooms;
+
+                std::cout<<"Is there bedroom in the floor number "<<i+1<<" ? If yes - intut 1, if no - input 0\n";
+                std::cin>>floor1.bedroom;
+                if (floor1.bedroom) {
+                   std::cout<<"Input square of bedroom\n"; 
+                   std::cin>>floor1.bedroom_square;
+                }
+
+                std::cout<<"Is there kitchen in the floor number "<<i+1<<"? If yes - intut 1, if no - input 0\n";
+                std::cin>>floor1.kitchen;
+                if (floor1.kitchen) {
+                    std::cout<<"Input square of kitchen\n"; 
+                    std::cin>>floor1.kitchen_square;
+                }
+
+                std::cout<<"Is there bathroom in the floor number "<<i+1<<"? If yes - intut 1, if no - input 0\n";
+                std::cin>>floor1.bathroom;
+                if (floor1.bathroom) {
+                    std::cout<<"Input square of bathroom\n"; 
+                    std::cin>>floor1.bathroom_square;
+                }
+
+                std::cout<<"Is there children in the floor number "<<i+1<<"? If yes - intut 1, if no - input 0\n";
+                std::cin>>floor1.children;
+                if (floor1.children) {
+                    std::cout<<"Input square of children room\n"; 
+                    std::cin>>floor1.children_square;
+                }
+                
+                std::cout<<"Is there living room in the floor number "<<i+1<<"? If yes - intut 1, if no - input 0\n";
+                std::cin>>floor1.living_room;
+                if (floor1.living_room) {
+                    std::cout<<"Input square of living room\n"; 
+                    std::cin>>floor1.living_room_square;
+                }
+
+                plot.floors.push_back(floor1);
+                floor1=floor2;   
+            }
+            
+        }
+
+        std::cout<<"Is there garage in the plot? If yes - intut 1, if no - input 0\n";
+        std::cin>>choice_int;
+        choice_bool= (bool) choice_int;
+        plot.garage=choice_bool;
+
+        if (choice_bool) {
+            std::cout<<"What is the square of the garage?\n";
+            std::cin>>plot.garage_square;
+        }
+        
+        std::cout<<"Is there barn in the plot? If yes - intut 1, if no - input 0\n";
+        std::cin>>choice_int;
+        choice_bool= (bool) choice_int;
+        plot.barn=choice_bool;
+
+        if(choice_bool) {
+            std::cout<<"Input square of barn\n";
+            std::cin>>plot.barn_square;
+        }
+
+        std::cout<<"Is there bath in the plot? If yes - intut 1, if no - input 0\n";
+        std::cin>>choice_int;
+        choice_bool= (bool) choice_int;
+        plot.bath=choice_bool;
+
+        if(choice_bool) {
+            std::cout<<"Input square of barn\n";
+            std::cin>>plot.bath_square;
+        }
+
+        plots.push_back(plot);
+        plot=plot2;
+    }
+
+
+}
+
+
+
+задание 3:
+Реализуйте структуру двумерного математического вектора и основные операции над ним. Обе координаты вектора (x и y) должны быть вещественными числами.
+Начиная работу с программой, пользователь вводит команду. Затем в зависимости от команды пользователь вводит аргументы. Это могут быть как векторы, 
+так и обычные скалярные значения. Результат помещается в стандартный вывод. Это тоже может быть или вектор, или скаляр.
+Реализуйте в виде отдельных функций операции:
+сложение двух векторов — команда add;
+вычитание двух векторов — команда subtract;
+умножение вектора на скаляр — команда scale;
+нахождение длины вектора — команда length;
+нормализация вектора — команда normalize.
+
+
+#include <iostream>
+#include <cmath>
+void fun_add(float x1, float y1,  float x2, float y2) {
+    float x =x1+x2;
+    float y=y1+y2;
+    std::cout<<"result of vector addition: ("<< x <<","<<y<<")";
+}
+
+void fun_subtruct (float x1, float y1,  float x2, float y2) {
+    float x =x1-x2;
+    float y=y1-y2;
+    std::cout<<"vector subtraction result: ("<< x <<","<<y<<")";    
+}
+
+void fun_scale (float x1, float y1, float number) {
+    x1*=number;
+    y1*=number;
+    std::cout<<"result of multiplying a vector by a scalar: ("<< x1 <<","<<y1<<")";    
+}
+
+void fun_length (float x1, float y1) {
+    float len= sqrt(pow(x1,2)+pow(y1,2));
+    std::cout<<"vector length: "<<len; 
+}
+
+void fun_normalize (float x1, float y1) {
+    float len= sqrt(pow(x1,2)+pow(y1,2));
+    x1/=len;
+    y1/=len;
+    std::cout<<"guide vector: ("<< x1 <<","<<y1<<")";
+}
+
+struct coordinates {
+    float x;
+    float y;
+};
+
+int main()   {
+    coordinates Input[2];
+    std::string operation;
+    std::cout<<"Input operation (add,substruct,scale,length,normalize)\n";
+    std::cin>>operation;
+    float number;
+
+    if (operation== "add") { 
+        std::cout<<"Enter the x and y coordinates of the first vector respectively\n";
+        std::cin>>Input[0].x>>Input[0].y;
+        std::cout<<"Enter the x and y coordinates of the second vector respectively\n";
+        std::cin>>Input[1].x>>Input[1].y;
+        fun_add(Input[0].x ,Input[0].y,Input[1].x, Input[1].y);
+
+    } else if (operation=="substruct"){
+        std::cout<<"Enter the x and y coordinates of the first vector respectively\n";
+        std::cin>>Input[0].x>>Input[0].y;
+        std::cout<<"Enter the x and y coordinates of the second vector respectively\n";
+        std::cin>>Input[1].x>>Input[1].y;
+        fun_subtruct(Input[0].x ,Input[0].y,Input[1].x, Input[1].y); 
+
+    } else if (operation=="scale"){
+        std::cout<<"Enter the x and y coordinates of the vector respectively\n";
+        std::cin>>Input[0].x>>Input[0].y;
+        std::cout<<"Input number\n";
+        std::cin>> number;
+        fun_scale(Input[0].x ,Input[0].y, number) ;
+
+    } else if (operation=="length"){
+        std::cout<<"Enter the x and y coordinates of the vector respectively\n";
+        std::cin>>Input[0].x>>Input[0].y;
+        fun_length(Input[0].x, Input[0].y);
+
+    } else if (operation=="normalize") {
+        std::cout<<"Enter the x and y coordinates of the vector respectively\n";
+        std::cin>>Input[0].x>>Input[0].y;
+        fun_normalize(Input[0].x, Input[0].y);
+    }
+
+}
