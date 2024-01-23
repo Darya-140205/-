@@ -1,0 +1,41 @@
+задание: Написать функцию, которая принимает указатель на char, по которому лежит строка. 
+Функция должна возвращать true, если вторая строка является подстрокой первой. 
+
+#include <iostream>
+
+std::string substr( const char* a, const char * b) {
+	bool ok=true;
+    int i=0 ,j=0;
+    std::string t="true", f="false";
+    
+    while (*(a+i+j)!='\0') {
+        j=0; 
+		ok=true;
+		while (*(b+j)!='\0'){
+		
+			if ( *(b+j)!=*(a+i+j)) {
+				ok=false;
+				break;
+			} 	
+			++j;
+		}
+			
+		if (ok) {
+			return t;	
+			break;
+		}
+	
+		++i;
+	}
+		
+	if (!ok)  return f;		
+			
+}
+
+int main()   {
+    const char* a = "Hello world";
+    char* b = "Hello";
+    char* c = "o wor";
+	char * d= "wild";
+    std::cout<< substr(a,b)<<" "<<substr(a,c)<<" "<<substr(a,d);
+}
