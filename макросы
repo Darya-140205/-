@@ -1,0 +1,85 @@
+задаие 1:
+Используя макросы, реализуйте небольшую программу по вводу дня недели и выводу этого дня недели в текстовом виде в консоль.
+В начале программы пользователь вводит день недели в виде его порядкового номера. В результате в консоли появляется буквенное отображение этого дня недели.
+В этом упражнении запрещается использовать классические переменные, кроме как для хранения ввода пользователя. 
+Использовать строковые литералы напрямую тоже нельзя. Всё должно быть реализовано исключительно на макросах.
+
+#include <iostream>
+
+#define day_of_week(number_of_day) (((number_of_day) == 1) ?  "Monday" : \
+(((number_of_day) == 2) ?  "Tuesday" :\
+(((number_of_day) == 3) ?  "Wednesday" :\
+(((number_of_day) == 4) ?  "Thursday" :\
+(((number_of_day) == 5) ?  "Friday" : \
+(((number_of_day) == 6) ?  "Saturday" : \
+(((number_of_day) == 7) ?  "Sunday" : ("ERROR"))))))))
+int main() {
+    int number_of_day;
+    std::cout << "enter the serial number of the day of the week:\n";
+    std::cin >> number_of_day;
+    std::cout << day_of_week(number_of_day);
+}
+
+задание 2: 
+Используя макросы вместе с условными директивами прекомпиляции (#if / #endif), реализуйте простую программу 
+по выводу названия времени года в консоль.
+Пользователь программы, который будет иметь дело с вашим кодом, в этом случае тоже программист.
+С помощью определения одного из макросов (в самом коде): SPRING, SUMMER, AUTUMN или WINTER он задаёт сезон,
+название, которое хочет увидеть на экране. При компиляции и запуске программы на экране должно появиться 
+название именно этого сезона и только его.
+
+
+#include <iostream>
+#define spring 1
+#define summer 2
+#define autumn 3
+#define winter 4
+#define season winter
+int main () {
+
+    #if season == spring
+    std::cout << "spring";
+    #elif   season == summer
+    std::cout<<"summer";
+    #elif   season==autumn
+    std::cout<<"autumn";
+    #elif   season==winter
+    std::cout<<"winter";
+    #endif
+}
+
+
+задание 3:
+В поезде всего 10 вагонов. В каждом из этих вагонов может находиться до 20 пассажиров — это их оптимальное количество. 
+Проанализируйте количество людей в каждом вагоне и сначала сообщите об излишне заполненных вагонах, далее о вагонах с
+пустыми пассажирскими местами. В заключение выведите общее количество пассажиров во всех вагонах.
+При старте программы пользователь вводит количество пассажиров в каждом вагоне. Замечания о вагонах должны выводиться в стандартную консоль.
+
+
+#include <iostream>
+
+#define maximum_number_of_passengers_in_wagon 20
+#define amount_of_wagons 10
+
+bool overfilled_wagon(int number_of_passengers) {
+     bool result;
+     number_of_passengers>maximum_number_of_passengers_in_wagon ?  result= true : result= false;
+     return result;
+}
+
+#define predicate_function_call(number_of_passengers_in_each_wagon,predicate)\
+    for(int i=0; i<amount_of_wagons;++i){ \
+    predicate(number_of_passengers_in_each_wagon[i]) ? std::cout<<"wagon number "<< i <<" is full\n": \
+    std::cout<<"wagon number "<< i <<" is partially full\n" ;}\
+
+int main() {
+    int number_of_passengers_in_each_wagon[maximum_number_of_passengers_in_wagon];
+
+	for (int i=0; i<amount_of_wagons;++i){
+        std::cout<<"enter the number of passengers in wagon "<<i<<" \n";
+        std::cin>>number_of_passengers_in_each_wagon[i];
+    }
+    std::cout<<"overfilled wagons:\n";
+    predicate_function_call(number_of_passengers_in_each_wagon,overfilled_wagon);
+    return 0;
+} 
