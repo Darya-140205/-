@@ -1,0 +1,429 @@
+задание 1:
+С помощью классов реализуйте программу имитации работы аудиоплеера. В плеере находится несколько аудиозаписей,
+доступных для воспроизведения. Для них вы должны создать отдельный класс Track. Полями этого класса должны быть: 
+название, дата создания (здесь вы можете использовать тип std::tm) и продолжительность записи в секундах.
+Сам плеер тоже реализуйте с помощью класса. Внутри он должен содержать список доступных записей и нужные для логики работы плеера поля.
+Пользователь взаимодействует с программой с помощью команд:
+Команда play запрашивает у пользователя название записи для воспроизведения и начинает её воспроизведение. 
+Воспроизведение симулируется с помощью вывода в консоль всей информации о записи. Если произведение какой-то записи уже начато, ничего не происходит.
+Команда pause. Ставит запись на паузу, о чём выводит соответствующее сообщение в консоль. Если запись уже на паузе или не воспроизводится вовсе, ничего не происходит.
+Команда next переходит к следующей записи для воспроизведения. Запись при этом выбирается случайно, как будто плеер работает в режиме shuffle.
+Команда stop прекращает воспроизведение текущей записи, если таковая имеется. Об этом выводится сообщение в консоль. Два раза остановить воспроизведение невозможно,
+так что команда должна срабатывать только в первом случае.
+Команда exit — выход из программы.
+
+#include <iostream>
+class Track{
+public:
+    std::string name;
+    std::string date;
+    std::string  duration;
+};
+
+class Player {
+private:
+
+    Track  track[5];
+
+    void filling_private( ){
+        track[0].name = "young and beautiful";
+        track[0].date = "23.04.2013";
+        track[0].duration = "110 sec";
+        track[1].name = "Summertime Sadness";
+        track[1].date = "26.10.2012";
+        track[1].duration = "120 sec";
+        track[2].name = "Bel Air";
+        track[2].date = "10.01.2012";
+        track[2].duration = "130 sec";
+        track[3].name = "The Blackest Day";
+        track[3].date = "02.02.2015";
+        track[3].duration = "140 sec";
+        track[4].name = "Swan Song";
+        track[4].date = "19.03.2015";
+        track[4].duration = "150 sec";
+    }
+public:
+   
+    static void filling(Player * player){
+       player->filling_private();
+    }
+
+    static void play( std::string & current_track  , Player * player) {
+        for (int i=0; i< 5 ;++i){
+            if (player->track[i].name==current_track) {
+                std::cout<<"Melody "<<player->track[i].name<<" reproduce."<<" Duration: "<<player->track[i].duration
+                         <<". Date of creation: "<<player->track[i].date <<std::endl;
+                break;
+            }
+        }
+    }
+
+    static void pause ( std::string  & current_track){
+        std::cout<<"the melody "<<current_track<<" is paused"<<std::endl;
+    }
+
+    static void next (std::string current_track ,Player * player) {
+
+        for (;;) {
+            int k = std::rand() % 5;
+            if (current_track!=player->track[k].name) {
+                current_track = player->track[k].name;
+                break;
+            }
+        }
+        std::cout<<"Next melody is "<<current_track<<std::endl;
+    }
+
+    static void stop(std::string & current_track){
+        std::cout<<"melody "<<current_track<<" playback ended"<<std::endl;
+    }
+
+};
+
+int main() {
+
+    std::string current_track="young_and_beautiful";
+    bool pause_current = false, stop_current = false;
+    std::string input_name;
+    Player *player = new Player();
+    std::string command = "";
+    bool end = false;
+    Player::filling( player);
+    for (;;) {
+
+        std::cout << "Input command(play,pause,next, stop, exit)" << std::endl;
+         std::cin >> command;
+        if (command == "play") {
+            std::cout << "enter the name of the melody" << std::endl;
+            std::cin.ignore();
+            std::getline(std::cin,input_name);
+            if (input_name != current_track) {
+                current_track = input_name;
+                Player::play(current_track, player);
+                pause_current = false;
+                stop_current = false;
+            }
+        } else if (command == "pause") {
+            if (!pause_current & !stop_current) {
+                Player::pause(current_track);
+                pause_current = true;
+            }
+
+        } else if (command == "next") {
+            Player::next(current_track, player);
+        } else if (command == "stop") {
+
+            if (!stop_current & !pause_current) {
+                Player::stop(current_track);
+                stop_current = true;
+            }
+
+        } else if (command == "exit") {
+            end = true;
+        }
+
+        if (end) {
+            break;
+        }
+
+    }
+    delete player;
+
+}
+
+
+задание 2:
+Реализуйте программу простой симуляции работы мобильного телефона.
+
+По мобильному телефону можно звонить и отправлять СМС. Также мобильный телефон содержит адресную книгу.
+Телефон и отдельные записи адресной книги должны быть реализованы с помощью классов. Все номера телефонов задаются в формате +7 <10 цифр>.
+Пользователь взаимодействует с программой с помощью команд:
+Команда add добавляет в адресную книгу новый номер телефона и ассоциирует его с именем контакта.
+Оба эти параметра команда получает от пользователя через стандартный ввод.
+Команда call запрашивает у пользователя имя контакта или номер телефона, на который требуется позвонить. 
+Сам по себе звонок симулируется с помощью вывода в консоль сообщения CALL с номером телефона, на который осуществляется вызов.
+Команда sms. Запрашивает у пользователя номер телефона (или имя контакта), на который требуется послать сообщение. Само 
+сообщение также вводится через стандартный ввод.
+Команда exit — выход из программы.
+
+
+#include <iostream>
+#include <map>
+class The_address_book {
+public:
+    std::map <std::string,std::string> oMap;
+
+};
+
+class Telephone {
+private:
+    The_address_book theAddressBook;
+
+public:
+
+    static void filling (Telephone * telephone){
+        telephone->theAddressBook.oMap.insert(std::make_pair("Ivanov", "+79657661213"));
+        telephone->theAddressBook.oMap.insert(std::make_pair("Petrov", "+79758664253"));
+        telephone->theAddressBook.oMap.insert(std::make_pair("Sidorov", "+79093569243"));
+        telephone->theAddressBook.oMap.insert(std::make_pair("Orlov", "+79655667218"));
+        telephone->theAddressBook.oMap.insert(std::make_pair("Belov", "+79654665213"));
+        telephone->theAddressBook.oMap.insert(std::make_pair("Golubev", "+79677631219"));
+    }
+
+    static std::string  Number_or_name(std::string contact) {
+        bool number=true;
+        bool name= false;
+        int name_int=0;
+
+        for (int i=0; i<contact.length();++i){
+            if ( !(contact[i]>='0' & contact[i]<='9' | contact[i]=='+') ){
+                number= false;
+            }
+            if (contact[i]>='a' & contact[i]<='z' | contact[i]>='A' & contact[i]<='Z'){
+                ++name_int;
+            }
+        }
+        if (name_int==contact.length()){
+            name=true;
+        }
+
+        if (contact[0]!='+' | contact[1]!='7' | contact.length()!=12 ){
+            number=false;
+        }
+
+        if (number){
+            return "number";
+        } else if (name){
+            return "name";
+        } else {
+            return "error";
+        }
+    }
+
+    static void add(Telephone* telephone){
+
+        std::string contact_phone ,contact_name;
+        std::cout<<"Enter the name of the new contact"<<std::endl;
+        std::cin>>contact_name ;
+        std::cout<<"Enter contact number"<<std::endl;
+        std::cin>>contact_phone;
+        if (Number_or_name(contact_name)=="name" & Number_or_name(contact_phone)=="number"){
+            telephone->theAddressBook.oMap.insert(std::make_pair(contact_name, contact_phone));
+        } else {
+            std::cout<<"Incorrect data"<<std::endl;
+        }
+
+    }
+
+    static void call (Telephone* telephone){
+        std::string contact;
+        std::cout<<"Enter contact number"<<std::endl;
+        std::cin>>contact;
+        std::string number_or_name=Number_or_name(contact);
+
+        if (number_or_name=="number"){
+            std::cout<<"phone number "<<contact<<" is ringing. Call Call Call"<<std::endl;
+        } else if(number_or_name=="name" & phone_search_by_name(contact, telephone)!="error" ) {
+            std::cout << "phone number " <<  phone_search_by_name(contact, telephone) << " is ringing. Call Call Call" << std::endl;
+        }
+         else {
+         std::cout<<"Incorrect data"<<std::endl;
+         }
+
+    }
+
+    static void sms(Telephone * telephone){
+        std::string contact;
+        std::cout<<"Enter the number(or contact name) to which you want to send a message "<<std::endl;
+        std::cin>>contact;
+        std::string number_or_name=Number_or_name(contact);
+
+        if (number_or_name=="number"){
+            std::cout<<"message sent to phone number "<< contact<<std::endl;
+        } else if(number_or_name=="name" & phone_search_by_name(contact, telephone)!="error" )
+        {
+            std::cout << "message sent to phone number " << phone_search_by_name(contact, telephone) << std::endl;
+        } else{
+            std::cout<<"Incorrect data"<<std::endl;
+        }
+    }
+
+
+    static std::string phone_search_by_name(std::string contact, Telephone * telephone){
+
+        std::string number="";
+        for (std::map<std::string, std::string>::iterator it = telephone->theAddressBook.oMap.begin();
+             it != telephone->theAddressBook.oMap.end(); ++it) {
+            if (it->first == contact) {
+                number=it->second;
+                break;
+            }
+        }
+        if (number!=""){
+            return number;
+        } else {
+            return "error";
+        }
+    }
+
+};
+
+
+int main() {
+
+    std::string command;
+    Telephone *telephone= new Telephone();
+
+    Telephone::filling(telephone);
+    for (;;) {
+        std::cout << "Input command (add, call, sms, exit)" << std::endl;
+        std::cin >> command;
+        if (command == "add") {
+            Telephone::add(telephone);
+        } else if (command == "call") {
+            Telephone::call(telephone);
+        } else if (command == "sms") {
+            Telephone::sms(telephone);
+        } else if (command == "exit") {
+            break;
+        }
+    }
+    delete telephone;
+}
+
+
+задание 3:
+Реализуйте симуляцию работы окна в визуальном интерфейсе пользователя.
+
+Окно располагается на виртуальном экране монитора, размером 80 × 50 точек. У окна есть несколько параметров,
+которые также задаются в пикселях: двумерные координаты левого верхнего угла и размеры, ширина и высота.
+Ширина и высота при этом не могут быть отрицательными, а координаты не могут выходить за область экрана.
+Пользователь взаимодействует с программой с помощью команд:
+Команда move принимает вектор, на который надо сместить окно на экране. Сообщение с новыми координатами окна появляется на экране.
+Команда resize запрашивает из стандартного ввода новый размер окна. После изменения размера сообщение с новым размером выводится на экране.
+Команда display выводит текущее изображение монитора в консоль. 0 — это пиксель вне области окна, 1 — с окном.
+Команда close закрывает окно, выход из программы.
+
+
+#include <iostream>
+
+class Window_options {
+public:
+    int x=0;
+    int y=5;
+    int Width=5;
+    int Height=5;
+
+};
+
+
+class Monitor_screen{
+private:
+    Window_options window_options;
+
+    void move_private(int x_input, int y_input){
+        window_options.x+=x_input;
+        window_options.y+=y_input;
+        std::cout<<"New coordinate x: "<<window_options.x <<" New coordinate y: "<<window_options.y<<std::endl;
+    }
+    void resize_private(int width, int height ){
+        window_options.Width=width;
+        window_options.Height=height;
+        std::cout<<"new window width and height: "<<window_options.Width<<" , "<<window_options.Height<<std::endl;
+    }
+
+    void resize_private_bottom_right_corner(int width, int height){
+        window_options.x-=( width- window_options.Width);
+        window_options.y+=( height-window_options.Height);
+        resize_private(width,height);
+    } 
+    
+    void resize_private_top_right_corner(int width, int height){
+        window_options.x-=( width- window_options.Width);
+        resize_private(width,height);
+    } 
+    
+
+    void resize_private_bottom_left_corner(int width, int height){
+        window_options.y+=( height-window_options.Height);
+        resize_private(width,height);
+    } 
+
+public:
+
+    static  void move(Monitor_screen * monitor_screen ){
+        int x_input,y_input;
+        std::cout<<"enter the coordinates x and y of the vector to which you want to shift the window on the screen"<<std::endl;
+        std::cin>>x_input>>y_input;
+        if (monitor_screen->window_options.x+monitor_screen->window_options.Width+ x_input>80 | monitor_screen->window_options.y+y_input>50 |
+        monitor_screen->window_options.x+x_input<0 | monitor_screen->window_options.y+y_input - monitor_screen->window_options.Height<0) {
+            std::cout<<"Incorrect data"<<std::endl;
+        } else {
+            monitor_screen->move_private(x_input,y_input);
+        }
+    }
+    static void resize(Monitor_screen *monitor_screen ){
+        int width;
+        int height;
+        std::cout<<"enter the desired window width and height"<<std::endl;
+        std::cin>>width>>height;
+        if ( monitor_screen->window_options.x+width<=80 & monitor_screen->window_options.y-height>=0 ) {
+            monitor_screen->resize_private(width,height);
+        } else if  ( monitor_screen->window_options.x+  monitor_screen->window_options.Width>=width & 
+                    monitor_screen->window_options.y - monitor_screen->window_options.Height+height <=50 )    {
+            monitor_screen->resize_private_bottom_right_corner(width,height);
+        } else if  (monitor_screen->window_options.y-height>= 0 & 
+                   monitor_screen->window_options.x-width+monitor_screen->window_options.Width>=0){
+            monitor_screen->resize_private_top_right_corner(width,height);
+        } else if (monitor_screen->window_options.y + height- monitor_screen->window_options.Height<=50 &
+                   monitor_screen->window_options.x + width<=80 ){
+            monitor_screen->resize_private_bottom_left_corner(width,height);
+        }
+        else {
+            std::cout<<"Incorrect data"<<std::endl;
+        }
+
+    }
+    static void display(Monitor_screen * monitor_screen ){
+        for(int i=0; i< 50;++i) {
+            for (int j=0; j<80 ; ++j){
+                if ( j>=monitor_screen->window_options.x  &  i>=50-monitor_screen->window_options.y &
+                j-monitor_screen->window_options.x<monitor_screen->window_options.Width  &
+                i-50+monitor_screen->window_options.y<monitor_screen->window_options.Height) {
+                    std::cout<<1;
+                } else {
+                    std::cout<<0;
+                }
+            }
+            std::cout<<std::endl;
+        }
+    }
+
+};
+
+
+int main(){
+
+
+    std::string command;
+    Monitor_screen * monitor_screen = new Monitor_screen() ;
+    Window_options * window_options =new Window_options();
+    Monitor_screen::display(monitor_screen);
+
+
+    for (;;) {
+        std::cout << "Input command(move, resize,display, close)" << std::endl;
+        std::cin >> command;
+        if (command == "move") {
+            Monitor_screen::move(monitor_screen);
+        } else if (command == "resize") {
+            Monitor_screen::resize( monitor_screen);
+        } else if (command == "display") {
+            Monitor_screen::display(monitor_screen);
+        } else if (command == "close") {
+            break;
+        }
+    }
+    delete monitor_screen;
+    delete window_options;
+}
