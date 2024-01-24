@@ -1,0 +1,370 @@
+задание 1:
+Спроектируйте иерархию классов различных фигур: 
+
+круг, 
+квадрат, 
+равносторонний треугольник, 
+прямоугольник.
+Условие: 
+
+Для всех этих фигур есть общие поля-данные — это координаты их центра и условный цвет фигуры: красный, синий или зелёный.
+
+Для отдельных фигур также есть уникальные параметры: 
+
+радиус для круга, 
+длина ребра для квадрата и равностороннего треугольника, 
+ширина и высота для прямоугольника. 
+Все данные — это вещественные числа с удвоенной точностью.
+
+Для каждой из фигур требуется определить методы нахождения: 
+
+площади фигуры;
+прямоугольника, описывающего фигуру полностью.
+
+#include <iostream>
+#include <cmath>
+const double PI=3.14;
+
+enum Color { None, Pink, White, Yellow };
+
+class Figure{
+public:
+
+    double center_coordinate_x;
+    double center_coordinate_y;
+    Color color;
+    Figure (double x, double y, Color c) : center_coordinate_x(x), center_coordinate_y(y), color(c) {}
+    virtual void area_method()=0;
+    virtual void rectangle_method()=0;
+
+    void color_fun() const{
+        if (color==0){
+            std::cout<<"Figure is none"<<std::endl;
+        } else if (color==1){
+            std::cout<<"Figure is pink"<<std::endl;
+        } else if (color==2){
+            std::cout<<"Figure is white"<<std::endl;
+        } else if (color==3){
+            std::cout<<"Figure is yellow"<<std::endl;
+        }
+    }
+
+};
+
+class Circle :public Figure{
+public:
+    double radius;
+    double area;
+
+    Circle (double center_coordinate_x_ , double center_coordinate_y_, Color color_, double radius_) :
+            Figure(center_coordinate_x_,center_coordinate_y_,color_),radius(radius_){}
+
+    void area_method() override{
+        this->area=PI*pow(radius,2);
+        std::cout<<"Area of square: "<< this->area<<std::endl;
+    }
+
+    void rectangle_method() override{
+        double center_coordinate_x_rectangle=center_coordinate_x;
+        double center_coordinate_y_rectangle=center_coordinate_y;
+        std::cout<<"The width and height of the circumscribed rectangle: "<< this->radius*2<<", "<< this->radius*2<<std::endl;
+        std::cout<<"Coordinates x and y of centre the rectangle "<<center_coordinate_x_rectangle<<" "<<center_coordinate_y_rectangle<<std::endl;
+    }
+};
+
+class Square :public Figure{
+    double side_length;
+    double area;
+    public:
+
+    Square(double center_coordinate_x_ , double center_coordinate_y_, Color color_, double side_length_) :
+          Figure(center_coordinate_x_,center_coordinate_y_,color_),side_length(side_length_){}
+
+    void area_method() override{
+        this->area=pow(side_length,2);
+        std::cout<<"Area of square: "<< this->area<<std::endl;
+    }
+    void rectangle_method() override{
+        double center_coordinate_x_rectangle=center_coordinate_x;
+        double center_coordinate_y_rectangle=center_coordinate_y;
+        std::cout<<"The width and height of the circumscribed rectangle: "<< this->side_length<<", "<<this->side_length<<std::endl;
+        std::cout<<"Coordinates x and y of centre the rectangle "<<center_coordinate_x_rectangle<<" "<<center_coordinate_y_rectangle<<std::endl;
+    }
+    
+};
+
+class Equilateral_triangle:public Figure{
+    public:
+    double side_length;
+    double area;
+
+    Equilateral_triangle (double center_coordinate_x_ , double center_coordinate_y_, Color color_, double side_length_):
+            Figure(center_coordinate_x_,center_coordinate_y_,color_),side_length(side_length_){}
+
+    void area_method() override{
+        this->area=pow(side_length,2)*pow(3,0.5)/4;
+        std::cout<<"Area of equilateral triangle: "<< this->area<<std::endl;
+    }
+
+    void rectangle_method() override{
+        double center_coordinate_x_rectangle=center_coordinate_x;
+        double center_coordinate_y_rectangle=center_coordinate_y*3/2;
+        std::cout<<"The width and height of the circumscribed rectangle: "<<side_length<<" ,"<<side_length*pow(3,0.5)/2<<std::endl;
+        std::cout<<"Coordinates x and y of centre the rectangle "<<center_coordinate_x_rectangle<<" "<<center_coordinate_y_rectangle<<std::endl;
+    }
+};
+
+class Rectangle :public Figure {
+    public:
+    double width;
+    double height;
+    double area; 
+    
+    Rectangle (double center_coordinate_x_, double center_coordinate_y_, Color color_, double width_, double height_) :
+            Figure(center_coordinate_x_,center_coordinate_y_,color_),width(width_),height(height_){}
+
+    
+    void area_method() override{
+        this->area=width*height;
+        std::cout<<"Area of equilateral rectangle: "<< this->area<<std::endl;
+    }
+    
+
+    void rectangle_method() override{
+        double center_coordinate_x_rectangle=center_coordinate_x;
+        double center_coordinate_y_rectangle=center_coordinate_y;
+        std::cout<<"The width and height of the circumscribed rectangle: "<< this->width<<", "<< this->height<<std::endl;
+        std::cout<<"Coordinates x and y of centre the rectangle "<<center_coordinate_x_rectangle<<" "<<center_coordinate_y_rectangle<<std::endl;
+    }
+
+};
+
+int main(){
+
+    std::string figure_input;
+    int color_choice;
+    Figure * figure;
+    double radius,center_coordinate_x,center_coordinate_y, side_length, width, height;
+
+    std::cout<<"enter the name of the figure(circle, square, triangle, rectangle)"<<std::endl;
+    std::cin>>figure_input;
+    std::cout<<"Input coordinates x and y of centre figure"<<std::endl;
+    std::cin>>center_coordinate_x>>center_coordinate_y;
+    std::cout<<"enter number of color of figure(0,1,2,3)"<<std::endl;
+    std::cin>>color_choice;
+    Color color = static_cast<Color>(color_choice);
+    if(figure_input=="circle"){
+        std::cout<<"Input radius of circle"<<std::endl;
+        std::cin>>radius;
+        figure=new Circle(center_coordinate_x,center_coordinate_y,color,radius);
+        figure->area_method();
+        figure->rectangle_method();
+        figure->color_fun();
+    } else if(figure_input=="square"){
+        std::cout<<"Input side length of a square"<<std::endl;
+        std::cin>>side_length;
+        figure=new Square(center_coordinate_x,center_coordinate_y,color,side_length);
+        figure->area_method();
+        figure->rectangle_method();
+        figure->color_fun();
+    } else if (figure_input=="triangle"){
+        std::cout<<"Input side length of a equilateral triangle"<<std::endl;
+        std::cin>>side_length;
+        figure=new Equilateral_triangle(center_coordinate_x,center_coordinate_y,color,side_length);
+        figure->area_method();
+        figure->rectangle_method();
+        figure->color_fun();
+    } else if (figure_input=="rectangle"){
+        std::cout<<"Input width and length of a rectangle"<<std::endl;
+        std::cin>>width>>height;
+        figure= new Rectangle(center_coordinate_x,center_coordinate_y,color,width, height);
+        figure->area_method();
+        figure->rectangle_method();
+        figure->color_fun();
+    } else{
+        std::cout<<"Incorrect data"<<std::endl;
+    }
+
+}
+
+
+задача 2:
+Реализуйте симуляцию работы компании. 
+
+Условие: 
+
+В компании существует вертикальное управление с иерархией:
+
+Есть основные рабочие — подчинённые, которые поделены на команды. 
+У каждой команды есть менеджер среднего звена. 
+Компанией руководит глава компании. 
+У всех сотрудников, включая руководителя, есть имена.
+
+Глава компании управляет стратегией. Он определяет основной вектор движения — задачи верхнего уровня.
+Менеджеры среднего звена разбивают эти задачи на подзадачи и раздают их своим подчинённым. Подчинённые выполняют работу.
+
+Реализация этой логики должна проходить упрощённым образом.
+Указания главы компании поступают из стандартного ввода в виде целочисленных идентификаторов.
+Идентификаторы служат зерном для генератора случайных чисел. 
+Каждый из менеджеров, принимая себе эту целочисленную команду, добавляет к ней свой порядковый номер и 
+вызывает с результирующей суммой функцию std::srand().
+На основе этой суммы вычисляется общее количество задач, которое требуется выполнить данной команде, — от единицы до
+количества работников в группе. 
+Всего есть три типа задач для работников: A, B и C. Они тоже выбираются случайно и распределяются между незанятыми рабочими.
+Как должна работать программа:
+
+При старте программы пользователь указывает в стандартном вводе количество команд и количество работников в каждой из команд.
+Далее вводит целые числа, которые соответствуют указаниям руководителя компании. Когда какой-то работник или менеджер получил
+указания или задачу, об этом сообщается в стандартный вывод, включая имя работающего сотрудника. 
+Программа завершается, когда все работники заняты какими-то задачами.
+
+
+
+
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+#include <vector>
+
+class Basic_workers{
+public:
+    std::string name_worker;
+    char task=' ';
+};
+
+class Middle_manager{
+public:
+    std::string name_manager;
+    int instruction=-1;
+    std::vector<Basic_workers> basic_workers;
+};
+
+struct Head{
+    std::vector <Middle_manager> middle_manager;
+};
+
+class Head_of_the_company{
+public:
+    std::string name_head=" ";
+    std::vector <Middle_manager> middle_manager;
+    Head_of_the_company(Head & head_of_the_company, std::string name_head_):name_head(name_head_),
+    middle_manager(head_of_the_company.middle_manager)  {  }
+};
+
+
+
+int main(){
+    int instruction, number_of_command, number_of_worker;
+    std::string name_worker,name_head;
+
+    Basic_workers basic_worker;
+    Middle_manager middle_manager;
+    Head head_of_the_company;
+
+    std::cout<<"Input name of head of the company"<<std::endl;
+    std::cin>>name_head;
+    std::srand(static_cast<unsigned int> (std::time(nullptr)));
+    std::cout<<"Input number of command"<<std::endl;
+    std::cin>>number_of_command;
+
+
+    int max_task=0;
+    for (int i=0; i<number_of_command;++i){
+        std::cout<<"Input name of manager "<<i+1<<std::endl;
+        std::cin>>middle_manager.name_manager;
+        std::cout<<"Input number of workers in command "<<i+1<<std::endl;
+        std::cin>>number_of_worker;
+        max_task+=number_of_worker;
+        for (int j=0; j<number_of_worker;++j){
+            std::cout<<"Input name of worker "<<j+1<<std::endl;
+            std::cin>>basic_worker.name_worker;
+            middle_manager.basic_workers.push_back(basic_worker);
+        }
+        head_of_the_company.middle_manager.push_back(middle_manager);
+         middle_manager.basic_workers.clear();
+    }
+
+
+    int task_A_B_C,total_task=0;
+    bool end= false, print;
+
+    while (!end){
+        for (int i = 0; (i < number_of_command) & !end; ++i) {
+
+
+            int number_of_free_worker=-1;
+            for (int j = 0; j < head_of_the_company.middle_manager[i].basic_workers.size() ; ++j) {
+                if (head_of_the_company.middle_manager[i].basic_workers[j].task != 'A' &
+                    head_of_the_company.middle_manager[i].basic_workers[j].task != 'B' &
+                    head_of_the_company.middle_manager[i].basic_workers[j].task != 'C') {
+                    number_of_free_worker=j;
+                            break;
+                }
+            }
+
+            /* если есть свободные рабочии у менеджера i */
+            if (number_of_free_worker!=-1) {
+
+                std::cout << "Enter instruction" << std::endl;
+                std::cin >> instruction;
+                head_of_the_company.middle_manager[i].instruction = instruction;
+                std::cout << "The manager "<<i+1 <<" "<<head_of_the_company.middle_manager[i].name_manager << " was instructed"
+                          << std::endl;
+                /* находим количество задач для команды менеджера i */
+                std::srand(static_cast<unsigned int> (instruction + i));
+                int count_task = rand() % head_of_the_company.middle_manager[i].basic_workers.size() + 1;
+
+                /*если число задач больше чем надо, уменьшаем это число */
+                if (total_task+count_task==max_task){
+                    end = true;
+                } else if (total_task+count_task>max_task){
+                    while (total_task+count_task>max_task){
+                        --count_task;
+                    }
+                    end= true;
+                }
+                int completed_tasks = 0;
+
+                /* задания раздаются в порядковом номере */
+                if(number_of_free_worker+count_task>head_of_the_company.middle_manager[i].basic_workers.size() ){
+                    count_task=head_of_the_company.middle_manager[i].basic_workers.size()-number_of_free_worker;
+                }
+                for (int j = number_of_free_worker; j < count_task+number_of_free_worker; ++j) {
+                    print = false;
+                    task_A_B_C = std::rand() % 3;
+                    if (head_of_the_company.middle_manager[i].basic_workers[j].task != 'A' &
+                        head_of_the_company.middle_manager[i].basic_workers[j].task != 'B' &
+                        head_of_the_company.middle_manager[i].basic_workers[j].task != 'C') {
+
+                        if (task_A_B_C == 0) {
+                            head_of_the_company.middle_manager[i].basic_workers[j].task = 'A';
+                            print = true;
+                        } else if (task_A_B_C == 1) {
+                            head_of_the_company.middle_manager[i].basic_workers[j].task = 'B';
+                            print = true;
+                        } else if (task_A_B_C == 2) {
+                            head_of_the_company.middle_manager[i].basic_workers[j].task = 'C';
+                            print = true;
+                        }
+                        if (print) {
+                            ++completed_tasks;
+                            std::cout << "Worker " << head_of_the_company.middle_manager[i].basic_workers[j].name_worker
+                                      << " " << j + 1 << " of command " << i + 1 << " get task " <<
+                                      head_of_the_company.middle_manager[i].basic_workers[j].task << std::endl;
+                        }
+                    }
+
+                }
+                /* считаем сколько задач реально выполнили */
+                total_task += completed_tasks;
+            }
+
+            if (total_task==max_task){
+                end = true;
+                break;
+            }
+
+        }
+    }
+    Head_of_the_company head_of_the_company_(head_of_the_company,name_head);
+}
