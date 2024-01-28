@@ -1,0 +1,125 @@
+задание 1:
+С помощью шаблонов реализуйте простой класс реестра, хранящий произвольные типы значений по ключам произвольного типа. Ключи при этом могут повторяться.
+Реестр должен поддерживать следующие операции: добавление элемента с ключом, удаление элементов с заданным ключом, вывод всех значений с ключами в консоль, поиск элементов по ключу.
+Для тестирования программы предусмотрите ввод данных и команд из стандартной консоли: 
+
+add — добавить элемент с ключом;
+remove — удалить все элементы с заданным ключом;
+print — напечатать на экране все элементы с их ключами;
+find — найти все элементы по их ключу.
+Данный словарь должен работать на значениях и ключах следующих типов: int, double, std::string.
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+template <typename KeyType, typename ValueType>
+class Registry {
+private:
+    std::vector<std::pair<KeyType, ValueType>> data;
+
+public:
+    
+    void add(const KeyType& key, const ValueType& value) {
+        data.push_back(std::make_pair(key, value));
+    }
+
+    
+    void remove(const KeyType& key) {
+        data.erase(std::remove_if(data.begin(), data.end(), [key](const std::pair<KeyType, ValueType>& pair) {
+                return pair.first == key; }), data.end());
+    }
+
+
+    void print() const {
+        for (const auto& pair : data) {
+            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+        }
+    }
+
+    
+    void find(const KeyType& key) const {
+        for (const auto& pair : data) {
+            if (pair.first == key) {
+                std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+            }
+        }
+    }
+};
+
+int main() {
+    
+    Registry<int, int> intRegistry;
+
+    Registry<std::string, double> doubleRegistry;
+
+    intRegistry.add(1, 100);
+    intRegistry.add(2, 200);
+    intRegistry.add(1, 150); 
+    doubleRegistry.add("key1", 3.14);
+    doubleRegistry.add("key2", 2.718);
+
+    
+    std::cout << "Int Registry:" << std::endl;
+    intRegistry.print();
+
+    std::cout << "\nDouble Registry:" << std::endl;
+    doubleRegistry.print();
+
+
+    intRegistry.remove(1);
+
+    
+    std::cout << "\nInt Registry after removal:" << std::endl;
+    intRegistry.print();
+
+
+    std::cout << "\nElements with key \"key2\" in Double Registry:" << std::endl;
+    doubleRegistry.find("key2");
+
+    return 0;
+}
+
+
+
+
+задание 2:
+Реализуйте шаблонную функцию подсчёта среднего арифметического числа в массиве скалярных чисел произвольного типа. Это может быть int, double, float и так далее.
+
+#include <iostream>
+
+template < typename T >
+void input(T array[8])
+{
+    for (int i = 0; i < 8; ++i)
+    {  
+        std::cin>>array[i];
+    }
+}
+
+
+template < typename T >
+double average(T array[8])
+{
+    double sum=0;
+    for (int i=0; i<8;++i){
+        sum+=array[i];
+    }
+    return sum/8;
+}
+
+int main(){
+     
+    int array1[8];
+    double array2[8];
+    std::cout<<"Fill in array1(8)"<<std::endl;;
+    input(array1);
+    std::cout<<"Fill in array2(8)"<<std::endl;
+    input(array2);
+    
+    double average1=average(array1);
+    
+	double average2=average(array2);
+
+    std::cout<<"Average of array1: "<<average1<<" Average of array2: "<<average2;
+} 
