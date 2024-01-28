@@ -1,0 +1,170 @@
+задание 1:
+Реализуйте класс Dog, который использует стандартный умный указатель shared_ptr для класса Toy.
+Реализуйте у класса Dog метод getToy, с помощью которого собака подбирает игрушку. 
+Если у собаки уже есть эта игрушка, необходимо вывести в консоль фразу: I already have this toy.
+Если в данный момент игрушка находится у другой собаки, нужно вывести в консоль: Another dog is playing with this toy.
+Если игрушка свободна, собака подбирает её.
+Реализуйте у класса Dog метод dropToy, с помощью которого собака бросает игрушку на пол, после чего другая может подобрать её. 
+Если у собаки в этот момент нет игрушки, в консоль необходимо вывести: Nothing to drop.
+
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class Toy {
+public:
+    Toy(const std::string& _name) : name(_name){}
+
+    std::string getName() {
+        return name;
+    }
+
+private:
+    std::string name;
+};
+
+class Dog{
+public:
+
+    Dog(std::string _name,std::shared_ptr<Toy> toyname,int age) : name(_name),lovelyToy(toyname){
+        if(age>0 & age<30){
+            this->age=age;
+        }
+    }
+
+    Dog():Dog ("Sharic",std::make_shared<Toy>("SomeToy"),1) {};
+    Dog(std::string _name):Dog (_name,std::make_shared<Toy>("SomeToy"),1){};
+    Dog(int age):Dog ("Sharic",std::make_shared<Toy>("SomeToy"),age){};
+    
+    void getToy(std::shared_ptr<Toy> toy) {
+        int count = toy.use_count();
+        if (count>2){
+            if (lovelyToy == toy) {
+                std::cout <<this->name <<" already have this toy." << std::endl;
+            } else {
+                std::cout << this->name<<" can not get "<<toy->getName() <<". Another dog is playing with this toy." << std::endl;
+            }
+        } else {
+            lovelyToy = toy;
+            std::cout <<this->name <<" got the toy " << lovelyToy->getName() << std::endl;
+        }
+    }
+
+    void dropToy(){
+        if(this->lovelyToy!=nullptr){
+            std::cout << this->name <<" drop out a toy " << lovelyToy->getName() << std::endl;
+            this->lovelyToy.reset();
+        } else{
+            std::cout<< this->name<<" doesn't have a toy"<<std::endl;
+        }
+    }
+
+    private:
+    std::string name;
+    int age;
+    std::shared_ptr<Toy> lovelyToy;
+};
+
+int main(){
+    std::vector <std::shared_ptr<Toy>> toys(3);
+    std::shared_ptr<Toy> ball =std::make_shared<Toy>("Ball");
+    std::shared_ptr<Toy> bone= std::make_shared<Toy>("Bone");
+    std::shared_ptr<Toy> teddy_bear= std::make_shared<Toy>("Teddy bear") ;
+    std::shared_ptr<Toy> stick= std::make_shared<Toy>("Stick") ;
+    Dog d1("Sharik",ball,10) ;
+    Dog d2("Kuzya",stick,10);
+    Dog d3("Druzok",bone,8);
+    Dog d4("Rex",teddy_bear,5);
+
+
+    d1.dropToy();
+    d1.getToy(stick);
+    d2.getToy(stick);
+    d2.dropToy();
+    d3.dropToy();
+    d3.getToy(ball);
+    d4.dropToy();
+    d4.getToy(bone);
+    d4.dropToy();
+
+}
+
+
+задание 2:
+Реализуйте умный указатель shared_ptr_toy с распределённым доступом и механикой подсчёта ссылок для класса Toy, реализованного в задании 1. 
+Указатель должен: 
+иметь все стандартные методы класса,
+быть функциональной заменой использованию shared_ptr<Toy>.
+Реализуйте свободную функцию make_shared_toy, которая принимает набор аргументов и конструирует игрушку от названия или при помощи копии другой игрушки.
+
+
+#include <iostream>
+class Toy {
+public:
+
+    Toy(const std::string& name) : name(name) {
+        std::cout << "Creating toy: " << name << std::endl;
+    }
+
+    ~Toy() {
+        std::cout << "Destroying toy " << name << std::endl;
+    }
+
+    void play() {
+        std::cout << "Playing with toy " << name << std::endl;
+    }
+
+private:
+    std::string name;
+};
+
+class shared_ptr_toy {
+public:
+    shared_ptr_toy() : ptr(nullptr), count_reference(nullptr) {}
+
+    explicit shared_ptr_toy(Toy* ptr) : ptr(ptr), count_reference(new int(1)) {}
+
+    shared_ptr_toy(const shared_ptr_toy& other) : ptr(other.ptr), count_reference(other.count_reference) {
+        if (count_reference){
+            (*count_reference)++;
+        }
+
+    }
+
+    shared_ptr_toy& operator=(const shared_ptr_toy& other) {
+        if (this != &other) {
+            decrease_in_the_number_of_reference();
+            ptr = other.ptr;
+            count_reference = other.count_reference;
+            if (count_reference)
+                (*count_reference)++;
+        }
+        return *this;
+    }
+
+    ~shared_ptr_toy() {
+        decrease_in_the_number_of_reference();
+    }
+
+    Toy& operator*() {
+        return *ptr;
+    }
+
+    Toy* operator->() {
+        return ptr;
+    }
+
+private:
+    void decrease_in_the_number_of_reference() {
+        if (count_reference) {
+            (*count_reference)--;
+            if (*count_reference == 0) {
+                delete ptr;
+                delete count_reference;
+            }
+        }
+    }
+
+    Toy* ptr;
+    int* count_reference;
+};
