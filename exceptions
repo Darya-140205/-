@@ -1,0 +1,102 @@
+#include <iostream>
+#include <map>
+#include <exception>
+#include <sstream>
+#include <string>
+#include <stdexcept>
+
+class OnlineStore {
+private:
+    std::map<std::string, int> inventory; 
+    std::map<std::string, int> cart;     
+
+public:
+    
+    OnlineStore(std::map<std::string,int> &oMap): inventory(oMap) {};
+
+    void add(const std::string& article, int quantity) {
+        if (inventory.find(article) != inventory.end() && quantity > 0) {
+            if (inventory[article] >= quantity) {
+                cart[article] += quantity;
+                inventory[article] -= quantity;
+                std::cout << "Good '" << article << "' added to cart" << std::endl;
+            } else {
+                throw std::runtime_error("Not enough good in stock");
+            }
+        } else {
+            throw std::invalid_argument("Incorrect item or quantity of good.");
+        }
+    }
+
+    
+    void remove(const std::string& article, int quantity) {
+        if (cart.find(article) != cart.end() && quantity > 0) {
+            if (cart[article] >= quantity) {
+                cart[article] -= quantity;
+                inventory[article] += quantity;
+                std::cout << "Good '" << article << "' deleted from cart." << std::endl;
+            } else {
+                throw std::runtime_error("Insufficient quantity of goods in the cart.");
+            }
+        } else {
+            throw std::invalid_argument("Incorrect item or quantity of good.");
+        }
+    }
+};
+
+int main() {
+
+    
+    
+    std::string str,article , commamd;
+    int  quantity;
+    std::map <std::string,int> oMap;
+
+    
+    oMap["234"]=1;
+    oMap["34"]=3;
+    oMap["222"]=5;
+    oMap["756"]=7;
+
+  OnlineStore store(oMap);
+
+    while (commamd!="stop")
+	{   std::exception **e;
+	    std::cout<<"enter add to add a product with the specified quantity or enter remove to delete the product with the specified quantity"<<std::endl;
+		std::cin>>commamd;
+
+		if (commamd=="add"| commamd=="remove" ){
+			std::cout<<"fill in the store database in the format article - quantity of goods"<<std::endl;
+		    std::cin>>article>>quantity; 
+			if (commamd=="add")
+			{  	
+				try{
+				    store.add(article, quantity);
+                }
+
+				catch(const std::runtime_error & e){
+				    std::cerr<<"Catch exception: "<<e.what()<<std::endl;
+			    }
+				catch(const std::invalid_argument & e){
+				    std::cerr<<"invalid_argument: "<<e.what() <<std::endl;
+				}
+			}
+			else {
+				try{
+				    store.remove(article, quantity);
+                }
+
+				catch(const std::runtime_error & e){
+				    std::cerr<<"Catch exception: "<<e.what()<<std::endl;
+			    }
+				catch(const std::invalid_argument & e){
+				    std::cerr<<"invalid_argument: "<<e.what() <<std::endl;
+				}
+
+			}
+		} 
+
+	}
+	
+
+}
