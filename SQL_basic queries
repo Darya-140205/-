@@ -1,12 +1,17 @@
+типы данных:
+числовые : int, gouble, float
+дата и время : DATETIME (YY-MM-DD HH:MM:SS), DATE (YY-MM-DD)
+строковые: СHAR(до 255 символов), VARCHAR(N) (до 65535 символов), TINYTEXT (до 255 символов), TEXT(до 65535 символов), MEDIUMTEXT(до 16777215 символов), LONGTEXT(до 4 ГБ), ENUM
+
 Создадим таблицу people с полями name(chatacter varying), surname(chatacter varying), age(integer).  
 
 Create table people(
-    name character varying,
+        name character varying,
 	surname character varying,
 	age integer
 );
 
-вставка строк в таблицу:
+вставка записей в таблицу:
 INSERT INTO public.people(
 	name, surname, age)
 	VALUES ('Максим', 'Трофимов', 18);
@@ -29,12 +34,28 @@ INSERT INTO public.people(
 вставка записи только с одим полем name:
 INSERT INTO public.people (name) VALUES('Пётр');
 
-вывод полей соответствующих условию: age>16 
+изменение записи:
+update people set age=16 where surname='Трофимов'
+
+вывод первых 2х записей:
+select * from people
+limit 2
+
+вывод записей со 2 по 4:
+select * from people
+limit 2,2
+
+вывод записей соответствующих условию: age>16 
 select * from people
 where age>16;
 
-вывод полей соответствующих условию: age>16 и age<18 
+вывод записей соответствующих условию: age>16 и age<18 
 select *from people where age between 16 and 18 
+
+вывод записей соответствующих условию: age=16 и age=18 
+select *from people where age in(16,18)
+
+
 
 сортировка по полю age по возрастанию:
 select *from people order by age  
@@ -42,7 +63,7 @@ select *from people order by age
 сортировка по полю age по убыванию:
 select *from people order by age  desc
 
-вывод полей соответствующих условию: age=16 или age=17 
+вывод записей соответствующих условию: age=16 или age=17 
 select *from people where age in(16,17) 
 
 create table results(
@@ -84,6 +105,15 @@ r.physics ,r.russian_language
 from people p join results r
 on r.surname=p.surname
 
+переименование 
+полей:
+alter table people
+rename column name to names
+
+добавление полей:
+alter table people 
+add city character varying
+
 вывод объединённых таблиц,где выполняется условие mathematics>280
 select p.name,p.surname,p.age,r.mathematics,
 r.physics,r.russian_language
@@ -91,7 +121,7 @@ from people p join results r
 on r.surname=p.surname
 where r.mathematics>280
 
-удаление полей с нужными параметрами:
+удаление записей с нужными параметрами:
 	DELETE FROM public.people
 WHERE name='Максим';
 
